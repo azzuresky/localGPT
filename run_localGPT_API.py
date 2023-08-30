@@ -163,8 +163,12 @@ def load_model(device_type, model_id, model_basename=None):
 # Requires ~21GB VRAM. Using STransformers alongside can potentially create OOM on 24GB cards.
 # model_id = "TheBloke/wizardLM-7B-GPTQ"
 # model_basename = "wizardLM-7B-GPTQ-4bit.compat.no-act-order.safetensors"
-model_id = "TheBloke/WizardLM-7B-uncensored-GPTQ"
-model_basename = "WizardLM-7B-uncensored-GPTQ-4bit-128g.compat.no-act-order.safetensors"
+# model_id = "TheBloke/WizardLM-7B-uncensored-GPTQ"
+# model_basename = "WizardLM-7B-uncensored-GPTQ-4bit-128g.compat.no-act-order.safetensors"
+
+model_id = "TheBloke/Llama-2-13B-chat-GPTQ"
+model_basename = "model.safetensors"
+
 LLM = load_model(device_type=DEVICE_TYPE, model_id=model_id, model_basename=model_basename)
 
 QA = RetrievalQA.from_chain_type(
@@ -265,6 +269,41 @@ def prompt_route():
         return jsonify(prompt_response_dict), 200
     else:
         return "No user prompt received", 400
+
+@app.route("/api/prompt_route_v2", methods=["GET", "POST"])
+def prompt_route():
+    global QA
+    user_prompt = request.form.get("user_prompt")
+    document_name = request.form.get("document_name")  # Add this line
+
+    if user_prompt and document_name:
+        # Get the content of the selected document
+        document_path = os.path.join("SOURCE_DOCUMENTS", document_name)  # Assuming the document is in the SOURCE_DOCUMENTS folder
+        with open(document_path, "r") as file:
+            document_content = file.read()
+
+        # Combine user prompt and document content
+        combined_input = f"{user_prompt}\n\nDocument Content:\n{document_content}"
+
+        # Get the answer from the chain
+        res = QA(combined_input)
+        answer, docs = res["result"], res["source_documents"]
+
+        prompt_response_dict = {
+            "Prompt": user_prompt,
+            "DocumentName": document_name,  # Add this line
+            "Answer": answer,
+        }
+
+        prompt_response_dict["Sources"] = []
+        for document in docs:
+            prompt_response_dict["Sources"].append(
+                (os.path.basename(str(document.metadata["source"])), str(document.page_content))
+            )
+
+        return jsonify(prompt_response_dict), 200
+    else:
+        return "No user prompt or document received", 400
 
 
 if __name__ == "__main__":
