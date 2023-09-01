@@ -177,6 +177,9 @@ QA = RetrievalQA.from_chain_type(
 
 app = Flask(__name__)
 
+@app.route("/", methods=["GET", "POST"])
+def hello_world():
+    return "alive"
 
 @app.route("/api/delete_source", methods=["GET"])
 def delete_source_route():
