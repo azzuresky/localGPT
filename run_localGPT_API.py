@@ -2,6 +2,7 @@ import logging
 import os
 import shutil
 import subprocess
+import argparse
 
 import torch
 from auto_gptq import AutoGPTQForCausalLM
