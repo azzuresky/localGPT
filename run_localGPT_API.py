@@ -271,7 +271,7 @@ def prompt_route():
         return "No user prompt received", 400
 
 @app.route("/api/prompt_route_v2", methods=["GET", "POST"])
-def prompt_route():
+def prompt_route_v2():
     global QA
     user_prompt = request.form.get("user_prompt")
     document_name = request.form.get("document_name")  # Add this line
@@ -310,4 +310,14 @@ if __name__ == "__main__":
     logging.basicConfig(
         format="%(asctime)s - %(levelname)s - %(filename)s:%(lineno)s - %(message)s", level=logging.INFO
     )
-    app.run(debug=False, port=5110)
+    # app.run(debug=False, port=5110)
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--port", type=int, default=5110,
+                        help="Port to run the UI on. Defaults to 5110.")
+    parser.add_argument("--host", type=str, default="0.0.0.0",
+                        help="Host to run the UI on. Defaults to 127.0.0.1. "
+                             "Set to 0.0.0.0 to make the UI externally "
+                             "accessible from other devices.")
+    args = parser.parse_args()
+    app.run(debug=False, host=args.host, port=args.port)
