@@ -177,7 +177,7 @@ QA = RetrievalQA.from_chain_type(
 
 app = Flask(__name__)
 
-@app.route("/", methods=["GET", "POST"])
+@app.route("/is_wyskGPT_active", methods=["GET", "POST"])
 def hello_world():
     return "alive"
 
