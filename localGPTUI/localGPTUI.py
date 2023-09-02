@@ -55,4 +55,12 @@ def home_page():
 
 
 if __name__ == "__main__":
-    app.run(debug=False, port=5111)
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--port", type=int, default=5111,
+                        help="Port to run the UI on. Defaults to 5110.")
+    parser.add_argument("--host", type=str, default="0.0.0.0",
+                        help="Host to run the UI on. Defaults to 127.0.0.1. "
+                             "Set to 0.0.0.0 to make the UI externally "
+                             "accessible from other devices.")
+    args = parser.parse_args()
+    app.run(debug=False, host=args.host, port=args.port)
