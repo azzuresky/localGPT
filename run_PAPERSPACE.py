@@ -20,4 +20,4 @@ process2.wait()
 process3.wait()
 process4.wait()
 
-print("Both scripts have finished running.")
+print("All scripts have finished running.")
