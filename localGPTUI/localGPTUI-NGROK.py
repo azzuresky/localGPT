@@ -25,30 +25,39 @@ def home_page():
             print(response.status_code)  # print HTTP response status code for debugging
             if response.status_code == 200:
                 # print(response.json())  # Print the JSON data from the response
-                return render_template("home.html", show_response_modal=True, response_dict=response.json())
-        elif "documents" in request.files:
+                return render_template("home-NGROK.html", show_response_modal=True, response_dict=response.json())
+        elif "documents" in request.files or "text" in request.form:
             delete_source_url = "http://localhost:5110/api/delete_source"  # URL of the /api/delete_source endpoint
             if request.form.get("action") == "reset":
                 response = requests.get(delete_source_url)
 
             save_document_url = "http://localhost:5110/api/save_document"
             run_ingest_url = "http://localhost:5110/api/run_ingest"  # URL of the /api/run_ingest endpoint
-            files = request.files.getlist("documents")
-            for file in files:
-                print(file.filename)
-                filename = secure_filename(file.filename)
-                with tempfile.SpooledTemporaryFile() as f:
-                    f.write(file.read())
-                    f.seek(0)
-                    response = requests.post(save_document_url, files={"document": (filename, f)})
-                    print(response.status_code)  # print HTTP response status code for debugging
+
+            if "documents" in request.files:
+                files = request.files.getlist("documents")
+                for file in files:
+                    if file.filename != "":
+                        print(file.filename)
+                        filename = secure_filename(file.filename)
+                        with tempfile.SpooledTemporaryFile() as f:
+                            f.write(file.read())
+                            f.seek(0)
+                            response = requests.post(save_document_url, files={"document": (filename, f)})
+                            print(response.status_code)  # print HTTP response status code for debugging
+
+            if "text" in request.form:
+                text = request.form.get("text")
+                response = requests.post(save_document_url, data={"text": text})
+                print(response.status_code)  # print HTTP response status code for debugging
+
             # Make a GET request to the /api/run_ingest endpoint
             response = requests.get(run_ingest_url)
             print(response.status_code)  # print HTTP response status code for debugging
 
     # Display the form for GET request
     return render_template(
-        "home.html",
+        "home-NGROK.html",
         show_response_modal=False,
         response_dict={"Prompt": "None", "Answer": "None", "Sources": [("ewf", "wef")]},
     )
