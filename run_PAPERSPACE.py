@@ -10,9 +10,10 @@ process1 = subprocess.Popen(['python', script1_path])
 # Run script2.py in a separate process
 process2 = subprocess.Popen(['python', script2_path])
 
-process3 = subprocess.Popen(['lt', '--port 5111 --subdomain wysk-ui-dev'])
+process3 = subprocess.Popen('lt --port 5111 --subdomain wysk-ui-dev',shell=True)
 
-process4 = subprocess.Popen(['lt', '--port 5110 --subdomain wysk-api-dev'])
+process4 = subprocess.Popen('lt --port 5110 --subdomain wysk-api-dev',shell=True)
+
 
 # Wait for both processes to finish
 process1.wait()
