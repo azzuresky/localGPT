@@ -1,8 +1,8 @@
 import subprocess
 
 # Define the paths to your Python scripts
-script1_path = 'run_localGPT_API-NGROK.py'
-script2_path = 'localGPTUI/localGPTUI-NGROK.py'
+script1_path = 'run_localGPT_API-TUNNEL.py'
+script2_path = 'localGPTUI/localGPTUI-TUNNEL.py'
 
 # Run script1.py in a separate process
 process1 = subprocess.Popen(['python', script1_path])
