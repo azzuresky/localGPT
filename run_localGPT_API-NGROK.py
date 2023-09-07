@@ -196,19 +196,47 @@ def delete_source_route():
 
 @app.route("/api/save_document", methods=["GET", "POST"])
 def save_document_route():
-    if "document" not in request.files:
-        return "No document part", 400
-    file = request.files["document"]
-    if file.filename == "":
-        return "No selected file", 400
-    if file:
+    # if "document" not in request.files:
+    #     return "No document part", 400
+    # file = request.files["document"]
+    # if file.filename == "":
+    #     return "No selected file", 400
+    # if file:
+    #     filename = secure_filename(file.filename)
+    #     folder_path = "SOURCE_DOCUMENTS"
+    #     if not os.path.exists(folder_path):
+    #         os.makedirs(folder_path)
+    #     file_path = os.path.join(folder_path, filename)
+    #     file.save(file_path)
+    #     return "File saved successfully", 200
+    document_saved = False
+    text_saved = False
+
+    if "document" in request.files and request.files["document"].filename != "":
+        file = request.files["document"]
         filename = secure_filename(file.filename)
         folder_path = "SOURCE_DOCUMENTS"
         if not os.path.exists(folder_path):
             os.makedirs(folder_path)
         file_path = os.path.join(folder_path, filename)
         file.save(file_path)
-        return "File saved successfully", 200
+        document_saved = True
+
+    if "text" in request.form and request.form["text"].strip() != "":
+        text = request.form["text"]
+        filename = "text_input.txt"  # You can choose any filename you like
+        folder_path = "SOURCE_DOCUMENTS"
+        if not os.path.exists(folder_path):
+            os.makedirs(folder_path)
+        file_path = os.path.join(folder_path, filename)
+        with open(file_path, "w") as text_file:
+            text_file.write(text)
+        text_saved = True
+
+    if document_saved or text_saved:
+        return "Document and/or text saved successfully", 200
+    else:
+        return "No document or text provided", 400
 
 
 @app.route("/api/run_ingest", methods=["GET"])
@@ -252,6 +280,7 @@ def run_ingest_route():
 @app.route("/api/prompt_route", methods=["GET", "POST"])
 def prompt_route():
     global QA
+    print(QA)
     user_prompt = request.form.get("user_prompt")
     if user_prompt:
         # print(f'User Prompt: {user_prompt}')
