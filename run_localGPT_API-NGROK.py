@@ -280,7 +280,6 @@ def run_ingest_route():
 @app.route("/api/prompt_route", methods=["GET", "POST"])
 def prompt_route():
     global QA
-    print(QA)
     user_prompt = request.form.get("user_prompt")
     if user_prompt:
         # print(f'User Prompt: {user_prompt}')
