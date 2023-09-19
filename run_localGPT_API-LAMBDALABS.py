@@ -4,7 +4,14 @@ import shutil
 import subprocess
 import argparse
 
+#set allocation
+os.environ['PYTORCH_CUDA_ALLOC_CONF'] = 'max_split_size_mb:32'
+
 import torch
+
+#clear cache first
+torch.cuda.empty_cache()
+
 from auto_gptq import AutoGPTQForCausalLM
 from flask import Flask, jsonify, request
 from langchain.chains import RetrievalQA
@@ -24,11 +31,7 @@ from transformers import (
     pipeline,
 )
 from werkzeug.utils import secure_filename
-
 from constants import CHROMA_SETTINGS, EMBEDDING_MODEL_NAME, PERSIST_DIRECTORY
-
-#clear cache first
-torch.cuda.empty_cache()
 
 DEVICE_TYPE = "cuda"
 SHOW_SOURCES = True
