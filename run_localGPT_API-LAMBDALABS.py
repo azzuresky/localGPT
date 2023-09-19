@@ -27,6 +27,9 @@ from werkzeug.utils import secure_filename
 
 from constants import CHROMA_SETTINGS, EMBEDDING_MODEL_NAME, PERSIST_DIRECTORY
 
+#clear cache first
+torch.cuda.empty_cache()
+
 DEVICE_TYPE = "cuda"
 SHOW_SOURCES = True
 logging.info(f"Running on: {DEVICE_TYPE}")
