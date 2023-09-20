@@ -4,6 +4,9 @@ import shutil
 import subprocess
 import argparse
 
+#set allocation
+os.environ['PYTORCH_CUDA_ALLOC_CONF'] = 'max_split_size_mb:32'
+
 import torch
 from auto_gptq import AutoGPTQForCausalLM
 from flask import Flask, jsonify, request
